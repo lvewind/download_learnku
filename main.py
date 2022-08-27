@@ -42,9 +42,6 @@ class EarthDriver(Chrome):
             'margin-left': '0.75in',
             'encoding': "UTF-8",
             'no-outline': None,
-            'page-break-inside': 'avoid',
-            'page-break-before': 'always',
-            'page-break-after': 'always'
         }
 
     def get_index_page(self):
@@ -57,7 +54,7 @@ class EarthDriver(Chrome):
             for a in index_urls_el:
                 href = a.get_attribute("href")
                 self.index_page_list.append(href)
-            self.index_page_list = self.index_page_list[4: 7]
+            self.index_page_list = self.index_page_list[1: 7]
             print(self.index_page_list)
         except selenium.common.WebDriverException:
             pass
