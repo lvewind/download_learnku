@@ -20,7 +20,7 @@ class EarthDriver(Chrome):
             options.add_argument('user-data-dir=' + self.user_data_dir)
 
         options.add_experimental_option('excludeSwitches', ['enable-automation'])
-        options.add_argument('--headless')
+        # options.add_argument('--headless')
 
         try:
             super(EarthDriver, self).__init__(service=Service(ChromeDriverManager().install()), options=options)
@@ -64,7 +64,7 @@ class EarthDriver(Chrome):
             chapter_list = []
             self.get(url)
             self.switch_to.default_content()
-            chapter_name = self.find_element(By.XPATH, "/html/body/div[2]/div[1]/div[2]/div/div/div/div[1]/div/div/div[2]/div[1]").text
+            chapter_name = self.find_element(By.CLASS_NAME, "body > div.pusher > div.main.container > div > div > div > div > div.book.header > div > div > div.content > div.header").text
             chapter_container_el = self.find_element(By.CLASS_NAME, "sorted_table")
             if chapter_container_el:
                 chapter_list_el = chapter_container_el.find_elements(By.TAG_NAME, "a")
@@ -98,6 +98,8 @@ class EarthDriver(Chrome):
                         self.del_el("#scrollUp")
                         self.del_el("body > div.pusher > div.main.container > div.ui.centered.grid.container.stackable.docs-article > div > div.wiki.navigator.hide-on-mobile")
                     except selenium.common.exceptions.InvalidElementStateException as e:
+                        print(e)
+                    except selenium.common.exceptions.NoSuchElementException as e:
                         print(e)
                     file_name = os.path.join(chapter_dir, page.get("name") + ".pdf")
                     # self.execute_script('document.title=arguments[0];window.print();', file_name)
