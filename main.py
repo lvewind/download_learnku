@@ -13,7 +13,7 @@ import pdfkit
 class EarthDriver(Chrome):
     def __init__(self, user_data_dir=""):
         options = ChromeOptions()
-        options.add_argument('window-size=2560,1440')
+        # options.add_argument('window-size=2560,1440')
         self.user_data_dir = user_data_dir
         self.street_view_on = False
         if self.user_data_dir:
@@ -65,7 +65,7 @@ class EarthDriver(Chrome):
             self.get(url)
             self.switch_to.default_content()
             chapter_name = str(self.execute_script("return document.title"))
-            chapter_name = chapter_name[0: chapter_name.find("|")]
+            chapter_name = chapter_name[0: chapter_name.find("|")].replace("《", "").replace("》", "")
             chapter_container_el = self.find_element(By.CLASS_NAME, "sorted_table")
             if chapter_container_el:
                 chapter_list_el = chapter_container_el.find_elements(By.TAG_NAME, "a")
