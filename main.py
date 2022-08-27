@@ -20,7 +20,7 @@ class EarthDriver(Chrome):
             options.add_argument('user-data-dir=' + self.user_data_dir)
 
         options.add_experimental_option('excludeSwitches', ['enable-automation'])
-        options.add_argument('--headless')
+        # options.add_argument('--headless')
 
         try:
             super(EarthDriver, self).__init__(service=Service(ChromeDriverManager().install()), options=options)
