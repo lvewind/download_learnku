@@ -41,7 +41,10 @@ class EarthDriver(Chrome):
             'margin-bottom': '0.75in',
             'margin-left': '0.75in',
             'encoding': "UTF-8",
-            'no-outline': None
+            'no-outline': None,
+            'page-break-inside': 'avoid',
+            'page-break-before': 'always',
+            'page-break-after': 'always'
         }
 
     def get_index_page(self):
@@ -54,7 +57,7 @@ class EarthDriver(Chrome):
             for a in index_urls_el:
                 href = a.get_attribute("href")
                 self.index_page_list.append(href)
-            self.index_page_list = self.index_page_list[1: 7]
+            self.index_page_list = self.index_page_list[4: 7]
             print(self.index_page_list)
         except selenium.common.WebDriverException:
             pass
@@ -73,7 +76,7 @@ class EarthDriver(Chrome):
                 chapter_list_el = chapter_container_el.find_elements(By.TAG_NAME, "a")
                 if chapter_list_el:
                     for a in chapter_list_el:
-                        chapter_list.append({"name": a.get_attribute("innerText"), "url": a.get_attribute("href")})
+                        chapter_list.append({"name": a.get_attribute("innerText").replace("/", "").replace(" 免费", ""), "url": a.get_attribute("href")})
                     self.chapter_page_list.append({"chapter_name": chapter_name,
                                                    "chapter": deepcopy(chapter_list)})
                     print(self.chapter_page_list[-1])
@@ -96,10 +99,11 @@ class EarthDriver(Chrome):
                         self.del_el("body > div.pusher > div.main.container > div.ui.centered.grid.container.stackable.docs-article > div > div:nth-child(2)")
                         self.del_el("body > div.pusher > div.main.container > div.ui.centered.grid.container.stackable.docs-article > div > div.ui.message.basic.share-wrap")
                         self.del_el("body > div.pusher > div.main.container > div.ui.centered.grid.container.stackable.docs-article > div > div.ui.segment.two.column.grid.doubling.hide-on-mobile.stackable.extra-padding.book-ads")
-                        # self.del_el("#topics-list")
+                        self.del_el("#topics-list")
                         self.del_el("body > div.pusher > div.ui.inverted.vertical.footer.segment")
                         self.del_el("#scrollUp")
                         self.del_el("body > div.pusher > div.main.container > div.ui.centered.grid.container.stackable.docs-article > div > div.wiki.navigator.hide-on-mobile")
+                        self.add_style_to_content("body > div.pusher > div.main.container > div.ui.centered.grid.container.stackable.docs-article > div > div.ui.segment.article-content")
                     except selenium.common.exceptions.InvalidElementStateException as e:
                         print(e)
                     except selenium.common.exceptions.NoSuchElementException as e:
@@ -114,7 +118,16 @@ class EarthDriver(Chrome):
                 var element = document.querySelector('""" + selector + """');
             if (element)
                 element.parentNode.removeChild(element);
-        """, selector)
+        """)
+
+    def add_style_to_content(self, selector):
+        self.execute_script("""
+                        var element = document.querySelector('""" + selector + """');
+                    if (element)
+                        element.style.setProperty('page-break-inside', 'avoid');
+                        element.style.setProperty('page-break-before', 'always');
+                        element.style.setProperty('page-break-after', 'always');
+                """)
 
 
 if __name__ == "__main__":
