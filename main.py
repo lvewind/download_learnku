@@ -20,7 +20,7 @@ class EarthDriver(Chrome):
             options.add_argument('user-data-dir=' + self.user_data_dir)
 
         options.add_experimental_option('excludeSwitches', ['enable-automation'])
-        # options.add_argument('--headless')
+        options.add_argument('--headless')
 
         try:
             super(EarthDriver, self).__init__(service=Service(ChromeDriverManager().install()), options=options)
@@ -64,7 +64,8 @@ class EarthDriver(Chrome):
             chapter_list = []
             self.get(url)
             self.switch_to.default_content()
-            chapter_name = self.find_element(By.CLASS_NAME, "body > div.pusher > div.main.container > div > div > div > div > div.book.header > div > div > div.content > div.header").text
+            chapter_name = str(self.execute_script("return document.title"))
+            chapter_name = chapter_name[0: chapter_name.find("|")]
             chapter_container_el = self.find_element(By.CLASS_NAME, "sorted_table")
             if chapter_container_el:
                 chapter_list_el = chapter_container_el.find_elements(By.TAG_NAME, "a")
